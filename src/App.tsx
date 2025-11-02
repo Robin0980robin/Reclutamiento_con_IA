@@ -1,0 +1,47 @@
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { ThemeProvider } from "@/contexts/ThemeContext";
+import { FontSizeProvider } from "@/contexts/FontSizeContext";
+import { SpeechReaderProvider } from "@/contexts/SpeechReaderContext";
+import Index from "./pages/Index";
+import Auth from "./pages/Auth";
+import Caracteristicas from "./pages/Caracteristicas";
+import ParaQuien from "./pages/ParaQuien";
+import Contacto from "./pages/Contacto";
+import NotFound from "./pages/NotFound";
+
+const queryClient = new QueryClient();
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <ThemeProvider>
+      <FontSizeProvider>
+        <SpeechReaderProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <AuthProvider>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/auth" element={<Auth />} />
+                  <Route path="/caracteristicas" element={<Caracteristicas />} />
+                  <Route path="/para-quien" element={<ParaQuien />} />
+                  <Route path="/contacto" element={<Contacto />} />
+                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </AuthProvider>
+            </BrowserRouter>
+          </TooltipProvider>
+        </SpeechReaderProvider>
+      </FontSizeProvider>
+    </ThemeProvider>
+  </QueryClientProvider>
+);
+
+export default App;

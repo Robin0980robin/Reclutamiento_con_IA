@@ -1,0 +1,337 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Professional recruitment platform colors */
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    /* Primary: Professional blue for trust and corporate feel */
+    --primary: 221 83% 53%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 221 83% 45%;
+
+    /* Secondary: Lighter blue for sections */
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 222 47% 11%;
+
+    /* Muted: Subtle backgrounds */
+    --muted: 220 13% 95%;
+    --muted-foreground: 215 16% 47%;
+
+    /* Accent: Vibrant green for success and CTAs */
+    --accent: 142 76% 36%;
+    --accent-foreground: 0 0% 100%;
+    --accent-hover: 142 76% 30%;
+
+    /* Success indicator */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+
+    /* Destructive */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Borders and inputs */
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 221 83% 53%;
+
+    --radius: 0.75rem;
+
+    /* Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(221 83% 53%) 0%, hsl(221 83% 45%) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(220 14% 96%) 0%, hsl(0 0% 100%) 100%);
+    
+    /* Transitions */
+    --transition-base: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 222 47% 11%;
+    --foreground: 0 0% 98%;
+
+    --card: 217 33% 17%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 217 33% 17%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 221 83% 53%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 221 83% 60%;
+
+    --secondary: 217 33% 20%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 142 76% 36%;
+    --accent-foreground: 0 0% 100%;
+    --accent-hover: 142 76% 42%;
+
+    --success: 142 76% 40%;
+    --success-foreground: 0 0% 100%;
+
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 217 33% 20%;
+    --input: 217 33% 20%;
+    --ring: 221 83% 53%;
+
+    --gradient-hero: linear-gradient(135deg, hsl(221 83% 53%) 0%, hsl(221 83% 60%) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(217 33% 17%) 0%, hsl(222 47% 11%) 100%);
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  /* High Contrast Light Mode - Same colors as light but with increased contrast */
+  .high-contrast-light {
+    /* Professional recruitment platform colors - Enhanced contrast */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 5%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 5%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 5%;
+
+    /* Primary: Enhanced professional blue */
+    --primary: 221 100% 40%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 221 100% 35%;
+
+    /* Secondary: Enhanced contrast */
+    --secondary: 220 25% 90%;
+    --secondary-foreground: 0 0% 5%;
+
+    /* Muted: Enhanced visibility */
+    --muted: 220 25% 93%;
+    --muted-foreground: 0 0% 25%;
+
+    /* Accent: Enhanced green */
+    --accent: 142 90% 28%;
+    --accent-foreground: 0 0% 100%;
+    --accent-hover: 142 90% 23%;
+
+    /* Success indicator - Enhanced */
+    --success: 142 90% 28%;
+    --success-foreground: 0 0% 100%;
+
+    /* Destructive - Enhanced */
+    --destructive: 0 85% 45%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Borders and inputs - More subtle */
+    --border: 220 25% 80%;
+    --input: 220 25% 80%;
+    --ring: 221 100% 40%;
+
+    --radius: 0.75rem;
+
+    /* Gradients - Enhanced */
+    --gradient-hero: linear-gradient(135deg, hsl(221 100% 40%) 0%, hsl(221 100% 35%) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(220 25% 93%) 0%, hsl(0 0% 100%) 100%);
+    
+    --sidebar-background: 0 0% 97%;
+    --sidebar-foreground: 0 0% 5%;
+    --sidebar-primary: 221 100% 40%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 25% 92%;
+    --sidebar-accent-foreground: 0 0% 5%;
+    --sidebar-border: 220 25% 85%;
+    --sidebar-ring: 221 100% 40%;
+  }
+
+  /* High Contrast Dark Mode - Same colors as dark but with increased contrast */
+  .high-contrast-dark {
+    --background: 222 55% 5%;
+    --foreground: 0 0% 98%;
+
+    --card: 217 45% 10%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 217 45% 10%;
+    --popover-foreground: 0 0% 98%;
+
+    /* Primary: Enhanced blue for dark mode */
+    --primary: 221 100% 65%;
+    --primary-foreground: 222 55% 5%;
+    --primary-hover: 221 100% 70%;
+
+    /* Secondary: Enhanced contrast */
+    --secondary: 217 45% 13%;
+    --secondary-foreground: 0 0% 98%;
+
+    /* Muted: Enhanced visibility */
+    --muted: 217 45% 10%;
+    --muted-foreground: 215 30% 70%;
+
+    /* Accent: Enhanced green */
+    --accent: 142 90% 48%;
+    --accent-foreground: 222 55% 5%;
+    --accent-hover: 142 90% 53%;
+
+    /* Success indicator - Enhanced */
+    --success: 142 90% 48%;
+    --success-foreground: 222 55% 5%;
+
+    /* Destructive - Enhanced */
+    --destructive: 0 85% 58%;
+    --destructive-foreground: 0 0% 98%;
+
+    /* Borders and inputs - More subtle */
+    --border: 217 45% 25%;
+    --input: 217 45% 25%;
+    --ring: 221 100% 65%;
+
+    --gradient-hero: linear-gradient(135deg, hsl(221 100% 65%) 0%, hsl(221 100% 70%) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(217 45% 10%) 0%, hsl(222 55% 5%) 100%);
+    
+    --sidebar-background: 240 55% 3%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 221 100% 65%;
+    --sidebar-primary-foreground: 222 55% 5%;
+    --sidebar-accent: 240 45% 8%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 240 45% 20%;
+    --sidebar-ring: 221 100% 65%;
+  }
+
+  /* Subtle enhancements for high contrast - more elegant */
+  .high-contrast-light button,
+  .high-contrast-light a,
+  .high-contrast-dark button,
+  .high-contrast-dark a {
+    font-weight: 500;
+  }
+
+  /* Enhanced focus states with better styling */
+  .high-contrast-light *:focus-visible,
+  .high-contrast-dark *:focus-visible {
+    outline-width: 2px !important;
+    outline-offset: 2px !important;
+    outline-style: solid !important;
+  }
+
+  /* Improved shadows for depth in high contrast */
+  .high-contrast-light [class*="card"],
+  .high-contrast-light [class*="popover"],
+  .high-contrast-light [class*="dropdown"] {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.08);
+  }
+
+  .high-contrast-dark [class*="card"],
+  .high-contrast-dark [class*="popover"],
+  .high-contrast-dark [class*="dropdown"] {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-size: var(--base-font-size, 16px);
+    line-height: 1.6;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold;
+    line-height: 1.2;
+  }
+
+  /* Responsive font sizes based on base font size */
+  h1 { font-size: calc(var(--base-font-size, 16px) * 2.25); }
+  h2 { font-size: calc(var(--base-font-size, 16px) * 1.875); }
+  h3 { font-size: calc(var(--base-font-size, 16px) * 1.5); }
+  h4 { font-size: calc(var(--base-font-size, 16px) * 1.25); }
+  h5 { font-size: calc(var(--base-font-size, 16px) * 1.125); }
+  h6 { font-size: var(--base-font-size, 16px); }
+
+  /* Responsive breakpoints for headings */
+  @media (min-width: 768px) {
+    h1 { font-size: calc(var(--base-font-size, 16px) * 2.5); }
+    h2 { font-size: calc(var(--base-font-size, 16px) * 2); }
+    h3 { font-size: calc(var(--base-font-size, 16px) * 1.75); }
+  }
+
+  @media (min-width: 1024px) {
+    h1 { font-size: calc(var(--base-font-size, 16px) * 3); }
+    h2 { font-size: calc(var(--base-font-size, 16px) * 2.25); }
+    h3 { font-size: calc(var(--base-font-size, 16px) * 1.875); }
+  }
+
+  /* Ensure all text elements scale with base font size */
+  p, li, td, th, span, a, button, input, textarea, select, label {
+    font-size: inherit;
+  }
+
+  /* Ensure buttons and inputs maintain proper sizing */
+  button, input, select, textarea {
+    line-height: 1.5;
+  }
+
+  /* Focus visible for keyboard navigation */
+  *:focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
+  }
+}
+
+/* Font size utility classes */
+.font-size-small {
+  --base-font-size: 14px;
+}
+
+.font-size-normal {
+  --base-font-size: 16px;
+}
+
+.font-size-large {
+  --base-font-size: 18px;
+}
+
+.font-size-extra-large {
+  --base-font-size: 20px;
+}
