@@ -8,10 +8,14 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 import { FontSizeProvider } from "@/contexts/FontSizeContext";
 import { SpeechReaderProvider } from "@/contexts/SpeechReaderContext";
 import Index from "./pages/Index";
-import Auth from "./pages/Auth";
 import Caracteristicas from "./pages/Caracteristicas";
 import ParaQuien from "./pages/ParaQuien";
 import Contacto from "./pages/Contacto";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Profile from "./pages/Profile";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,10 +32,14 @@ const App = () => (
               <AuthProvider>
                 <Routes>
                   <Route path="/" element={<Index />} />
-                  <Route path="/auth" element={<Auth />} />
                   <Route path="/caracteristicas" element={<Caracteristicas />} />
                   <Route path="/para-quien" element={<ParaQuien />} />
                   <Route path="/contacto" element={<Contacto />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/forgot-password" element={<ForgotPassword />} />
+                  <Route path="/reset-password" element={<ResetPassword />} />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>

@@ -1,5 +1,5 @@
 ﻿import { Brain, LogOut, User, Menu, Sun, Moon, Monitor, Contrast, Type, Volume2, VolumeX, ZoomIn, ZoomOut, Play, StopCircle, BookOpen, FileText } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { Button } from './ui/button';
 import { useAuth } from '@/contexts/AuthContext';
@@ -29,6 +29,7 @@ import {
 
 const Header = () => {
   const { user, signOut } = useAuth();
+  const navigate = useNavigate();
   const { theme, setTheme, baseTheme } = useTheme();
   const { fontSize, setFontSize, increaseFontSize, decreaseFontSize } = useFontSize();
   const { isReading, isEnabled, speed, volume, toggleEnabled, setSpeed, setVolume, stop, readEntirePage, readSelectedText } = useSpeechReader();
@@ -174,28 +175,53 @@ const Header = () => {
               </div>
             </SheetContent>
           </Sheet>
+          <div className="flex items-center gap-3">
+            
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant='outline' size='sm' aria-label='Menú de cuenta de usuario' aria-haspopup='true'>
-                  <User className='h-4 w-4 mr-2' aria-hidden='true' />Mi cuenta
+                <Button variant="outline" size="sm">
+                  <User className="h-4 w-4 mr-2" />
+                  Mi cuenta
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align='end' role='menu' aria-label='Opciones de cuenta'>
+              <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Mi cuenta</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => signOut()} role='menuitem' aria-label='Cerrar sesión'>
-                  <LogOut className='mr-2 h-4 w-4' aria-hidden='true' />Cerrar sesión
+                <DropdownMenuItem asChild>
+                  <Link to="/profile" className="cursor-pointer">
+                    <User className="mr-2 h-4 w-4" />
+                    Ver perfil
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={async () => {
+                    await signOut();
+                    navigate('/');
+                  }}
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Cerrar sesión
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
             <>
-              <Link to='/auth'><Button variant='ghost' size='sm' aria-label='Iniciar sesión en la plataforma'>Iniciar sesión</Button></Link>
-              <Link to='/auth'><Button variant='default' size='sm' aria-label='Registrarse en la plataforma'>Registrarse</Button></Link>
+              <Link to="/login">
+                <Button variant="ghost" size="sm">
+                  Iniciar sesión
+                </Button>
+              </Link>
+              <Link to="/register">
+                <Button variant="default" size="sm">
+                  Registrarse
+                </Button>
+              </Link>
             </>
           )}
         </div>
+        </div>
+
       </div>
     </header>
   );

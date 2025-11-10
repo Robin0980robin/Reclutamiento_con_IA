@@ -41,23 +41,23 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Empresa */}
+          {/* Legal */}
           <div>
-            <h4 className="mb-4 font-semibold">Empresa</h4>
+            <h4 className="mb-4 font-semibold">Legal</h4>
             <ul className="space-y-2 text-sm">
               <li>
                 <a href="#" className="text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                  Sobre nosotros
+                  Política de Privacidad
                 </a>
               </li>
               <li>
                 <a href="#" className="text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                  Blog
+                  Términos de Uso
                 </a>
               </li>
               <li>
                 <a href="#" className="text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                  Carreras
+                  Sobre Nosotros
                 </a>
               </li>
             </ul>
