@@ -36,16 +36,16 @@ const features = [
 
 const Features = () => {
   return (
-    <section className="bg-secondary/30 py-1 md:py-1">
-      <div className="container mx-auto px-4">
-        <div className="mx-auto mb-16 max-w-3xl text-center">
+    <section className="bg-secondary/30 py-1 md:py-7">
+      <div className="container mx-auto px-20">
+        <div className="mx-auto mb-10 max-w-3xl text-center">
           <h2 className="mb-4">Características que transforman tu proceso de reclutamiento</h2>
           <p className="text-lg text-muted-foreground">
             Herramientas potentes diseñadas para hacer tu trabajo más fácil y efectivo
           </p>
         </div>
 
-        <div className="grid gap-1 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-3 mb-6 md:grid-cols- lg:grid-cols-3">
           {features.map((feature, index) => (
             <Card 
               key={index} 

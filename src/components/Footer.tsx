@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const Footer = () => {
   return (
     <footer className="border-t bg-secondary/30">
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-20 py-9">
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
           <div>
@@ -66,7 +66,7 @@ const Footer = () => {
           {/* Contacto */}
           <div>
             <h4 className="mb-4 font-semibold">Contacto</h4>
-            <ul className="space-y-3 text-sm">
+            <ul className="space-y-2 text-sm">
               <li className="flex items-center gap-2 text-muted-foreground">
                 <Mail className="h-4 w-4" />
                 <span>talentmatch@gmail.com</span>

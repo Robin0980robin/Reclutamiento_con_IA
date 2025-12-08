@@ -84,9 +84,9 @@ const Caracteristicas = () => {
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-4xl text-center">
             <h1 className="mb-1 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-              Caracteristicas
+              Características
             </h1>
-            <div className="flex flex-col gap-2 sm:flex-row sm:justify-center">
+            <div className="flex flex-col gap- sm:flex-row sm:justify-center">
               <Link to="/">
                 <Button variant="hero" size="lg" className="group">
                   <ArrowLeft className="mr-2 h-2 w-2 transition-transform group-hover:-translate-x-1" />
