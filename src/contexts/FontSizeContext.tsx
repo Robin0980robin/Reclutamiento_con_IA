@@ -4,7 +4,9 @@ type FontSize = "small" | "normal" | "large" | "extra-large";
 
 interface FontSizeContextType {
   fontSize: FontSize;
+  fontSizeValue: number;
   setFontSize: (size: FontSize) => void;
+  setFontSizeValue: (value: number) => void;
   increaseFontSize: () => void;
   decreaseFontSize: () => void;
 }
@@ -56,8 +58,18 @@ export function FontSizeProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const setFontSizeValue = (value: number) => {
+    // Map pixel value to font size category
+    if (value <= 14) setFontSize('small');
+    else if (value <= 16) setFontSize('normal');
+    else if (value <= 18) setFontSize('large');
+    else setFontSize('extra-large');
+  };
+
+  const fontSizeValue = fontSizeMap[fontSize];
+
   return (
-    <FontSizeContext.Provider value={{ fontSize, setFontSize, increaseFontSize, decreaseFontSize }}>
+    <FontSizeContext.Provider value={{ fontSize, fontSizeValue, setFontSize, setFontSizeValue, increaseFontSize, decreaseFontSize }}>
       {children}
     </FontSizeContext.Provider>
   );

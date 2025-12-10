@@ -3,6 +3,7 @@ import { createContext, useContext, useEffect, useState, ReactNode } from "react
 interface SpeechReaderContextType {
   isReading: boolean;
   isEnabled: boolean;
+  isPaused: boolean;
   speed: number;
   volume: number;
   voice: SpeechSynthesisVoice | null;
@@ -23,6 +24,7 @@ const SpeechReaderContext = createContext<SpeechReaderContextType | undefined>(u
 
 export function SpeechReaderProvider({ children }: { children: ReactNode }) {
   const [isReading, setIsReading] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
   const [isEnabled, setIsEnabled] = useState(() => {
     const stored = localStorage.getItem("speechReaderEnabled");
     return stored === "true";
@@ -89,11 +91,22 @@ export function SpeechReaderProvider({ children }: { children: ReactNode }) {
   const setSpeed = (newSpeed: number) => {
     setSpeedState(newSpeed);
     localStorage.setItem("speechSpeed", String(newSpeed));
+    // Apply speed in real time to current utterance
+    window.speechSynthesis.cancel();
+    setTimeout(() => {
+      window.speechSynthesis.resume();
+    }, 100);
   };
 
   const setVolume = (newVolume: number) => {
     setVolumeState(newVolume);
     localStorage.setItem("speechVolume", String(newVolume));
+    // Stop and resume with new volume
+    const wasSpeaking = window.speechSynthesis.speaking;
+    if (wasSpeaking) {
+      window.speechSynthesis.cancel();
+      // Volume changes take effect on next utterance
+    }
   };
 
   const setVoice = (newVoice: SpeechSynthesisVoice | null) => {
@@ -126,14 +139,17 @@ export function SpeechReaderProvider({ children }: { children: ReactNode }) {
   const stop = () => {
     window.speechSynthesis.cancel();
     setIsReading(false);
+    setIsPaused(false);
   };
 
   const pause = () => {
     window.speechSynthesis.pause();
+    setIsPaused(true);
   };
 
   const resume = () => {
     window.speechSynthesis.resume();
+    setIsPaused(false);
   };
 
   const readEntirePage = () => {
@@ -204,6 +220,7 @@ export function SpeechReaderProvider({ children }: { children: ReactNode }) {
       value={{ 
         isReading, 
         isEnabled, 
+        isPaused,
         speed, 
         volume, 
         voice,

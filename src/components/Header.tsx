@@ -1,10 +1,13 @@
-﻿import { Brain, LogOut, User, Menu, Sun, Moon, Monitor, Contrast, Type, Volume2, VolumeX, ZoomIn, ZoomOut, Play, StopCircle, BookOpen, FileText } from 'lucide-react';
+﻿import { Brain, LogOut, User, Menu, Sun, Moon, Monitor, Contrast, Type, Volume2, VolumeX, ZoomIn, ZoomOut, Play, StopCircle, BookOpen, FileText, Accessibility, Bell, AlertCircle, ArrowLeftRight, Square, CircleSlash } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { Button } from './ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useFontSize } from '@/contexts/FontSizeContext';
+import { useButtonSize } from '@/contexts/ButtonSizeContext';
+import { useLetterSpacing } from '@/contexts/LetterSpacingContext';
+import { useAutoplayBlock } from '@/contexts/AutoplayBlockContext';
 import { useSpeechReader } from '@/contexts/SpeechReaderContext';
 import { Slider } from './ui/slider';
 import { Label } from './ui/label';
@@ -31,9 +34,13 @@ const Header = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const { theme, setTheme, baseTheme } = useTheme();
-  const { fontSize, setFontSize, increaseFontSize, decreaseFontSize } = useFontSize();
-  const { isReading, isEnabled, speed, volume, toggleEnabled, setSpeed, setVolume, stop, readEntirePage, readSelectedText } = useSpeechReader();
+  const { fontSize, fontSizeValue, setFontSize, setFontSizeValue, increaseFontSize, decreaseFontSize } = useFontSize();
+  const { buttonSize, buttonSizeValue, setButtonSize, setButtonSizeValue } = useButtonSize();
+  const { letterSpacing, setLetterSpacing } = useLetterSpacing();
+  const { autoplayBlocked, setAutoplayBlocked } = useAutoplayBlock();
+  const { isReading, isEnabled, isPaused, speed, volume, toggleEnabled, setSpeed, setVolume, stop, pause, resume, readEntirePage, readSelectedText } = useSpeechReader();
   const [isAccessibilityOpen, setIsAccessibilityOpen] = useState(false);
+  const [visualAlertsEnabled, setVisualAlertsEnabled] = useState(false);
 
   const getThemeLabel = () => {
     switch (theme) {
@@ -79,15 +86,15 @@ const Header = () => {
         <div className='flex items-center gap-3'>
           <Sheet open={isAccessibilityOpen} onOpenChange={setIsAccessibilityOpen}>
             <SheetTrigger asChild>
-              <Button variant='ghost' size='sm' aria-label='Abrir menú de accesibilidad' aria-haspopup='true' className='relative'>
-                <Menu className='h-5 w-5' aria-hidden='true' />
+              <Button variant='default' size='sm' aria-label='Abrir menú de accesibilidad' aria-haspopup='true' className='relative bg-blue-600 hover:bg-blue-700 text-white'>
+                <Accessibility className='h-5 w-5' aria-hidden='true' />
                 {isEnabled && <span className='absolute -top-1 -right-1 h-3 w-3 rounded-full bg-green-500 border-2 border-background' aria-label='Lector de voz activo' />}
               </Button>
             </SheetTrigger>
             <SheetContent side='right' className='w-full sm:w-[400px] md:w-[480px] lg:w-[540px] overflow-y-auto'>
               <SheetHeader>
                 <SheetTitle className='flex items-center gap-2'>
-                  <Menu className='h-5 w-5' />
+                  <Accessibility className='h-5 w-5' />
                   Opciones de Accesibilidad
                 </SheetTitle>
                 <SheetDescription>
@@ -138,7 +145,12 @@ const Header = () => {
                         <Slider id='speech-volume' min={0} max={1} step={0.1} value={[volume]} onValueChange={([value]) => setVolume(value)} className='w-full' aria-label='Ajustar volumen del lector de voz' />
                         <div className='flex justify-between text-xs text-muted-foreground'><span>Silencio</span><span>Alto</span></div>
                       </div>
-                      {isReading && <Button variant='outline' size='sm' onClick={stop} className='w-full' aria-label='Detener reproducción'><StopCircle className='h-4 w-4 mr-2' />Detener Lectura</Button>}
+                      {isReading && (
+                        <Button variant='outline' onClick={isPaused ? resume : pause} className='w-full text-xs sm:text-sm h-auto py-2 px-3' aria-label={isPaused ? 'Continuar audio' : 'Pausar audio'}>
+                          <Play className='h-4 w-4 mr-1 sm:mr-2 flex-shrink-0' />
+                          <span className='truncate'>{isPaused ? 'Continuar' : 'Pausar'}</span>
+                        </Button>
+                      )}
                     </div>
                   )}
                 </div>
@@ -159,18 +171,118 @@ const Header = () => {
                 <div className='space-y-4'>
                   <div className='space-y-0.5'>
                     <Label className='text-base flex items-center gap-2'><Type className='h-4 w-4' />Tamaño de Fuente</Label>
-                    <p className='text-sm text-muted-foreground'>{getFontSizeLabel()}</p>
+                    <p className='text-sm text-muted-foreground'>{fontSizeValue}px</p>
                   </div>
-                  <div className='grid grid-cols-2 gap-2 sm:gap-3'>
-                    <Button variant={fontSize === 'small' ? 'default' : 'outline'} className='justify-start text-xs sm:text-sm h-auto py-2 px-3' onClick={() => setFontSize('small')}><Type className='h-3 w-3 mr-1 sm:mr-2 flex-shrink-0' /><span className='truncate'>Pequeña</span></Button>
-                    <Button variant={fontSize === 'normal' ? 'default' : 'outline'} className='justify-start text-xs sm:text-sm h-auto py-2 px-3' onClick={() => setFontSize('normal')}><Type className='h-4 w-4 mr-1 sm:mr-2 flex-shrink-0' /><span className='truncate'>Normal</span></Button>
-                    <Button variant={fontSize === 'large' ? 'default' : 'outline'} className='justify-start text-xs sm:text-sm h-auto py-2 px-3' onClick={() => setFontSize('large')}><Type className='h-5 w-5 mr-1 sm:mr-2 flex-shrink-0' /><span className='truncate'>Grande</span></Button>
-                    <Button variant={fontSize === 'extra-large' ? 'default' : 'outline'} className='justify-start text-xs sm:text-sm h-auto py-2 px-3' onClick={() => setFontSize('extra-large')}><Type className='h-6 w-6 mr-1 sm:mr-2 flex-shrink-0' /><span className='truncate'>Extra Grande</span></Button>
+                  <div className='space-y-4'>
+                    <div className='space-y-2'>
+                      <div className='flex items-center justify-between'>
+                        <Label htmlFor='font-size' className='text-sm'>Tamaño: {fontSizeValue}px</Label>
+                      </div>
+                      <Slider 
+                        id='font-size' 
+                        min={14} 
+                        max={20} 
+                        step={1} 
+                        value={[fontSizeValue]} 
+                        onValueChange={([value]) => setFontSizeValue(value)} 
+                        className='w-full' 
+                        aria-label='Ajustar tamaño de fuente' 
+                      />
+                      <div className='flex justify-between text-xs text-muted-foreground'><span>Pequeño (14px)</span><span>Grande (20px)</span></div>
+                    </div>
                   </div>
-                  <div className='flex gap-2'>
-                    <Button variant='outline' onClick={decreaseFontSize} disabled={fontSize === 'small'} className='flex-1 text-xs sm:text-sm h-auto py-2 px-3' aria-label='Disminuir tamaño de fuente'><ZoomOut className='h-4 w-4 mr-1 sm:mr-2 flex-shrink-0' /><span className='truncate'>Reducir</span></Button>
-                    <Button variant='outline' onClick={increaseFontSize} disabled={fontSize === 'extra-large'} className='flex-1 text-xs sm:text-sm h-auto py-2 px-3' aria-label='Aumentar tamaño de fuente'><ZoomIn className='h-4 w-4 mr-1 sm:mr-2 flex-shrink-0' /><span className='truncate'>Ampliar</span></Button>
+                </div>
+                <Separator />
+                <div className='space-y-4'>
+                  <div className='space-y-0.5'>
+                    <Label className='text-base flex items-center gap-2'><ArrowLeftRight className='h-4 w-4' />Espaciado de Letras</Label>
+                    <p className='text-sm text-muted-foreground'>{letterSpacing}px</p>
                   </div>
+                  <div className='space-y-4'>
+                    <div className='space-y-2'>
+                      <div className='flex items-center justify-between'>
+                        <Label htmlFor='letter-spacing' className='text-sm'>Espaciado: {letterSpacing}px</Label>
+                      </div>
+                      <Slider 
+                        id='letter-spacing' 
+                        min={-1} 
+                        max={3} 
+                        step={0.5} 
+                        value={[letterSpacing]} 
+                        onValueChange={([value]) => setLetterSpacing(value)} 
+                        className='w-full' 
+                        aria-label='Ajustar espaciado de letras' 
+                      />
+                      <div className='flex justify-between text-xs text-muted-foreground'><span>Unidas (-1px)</span><span>Separadas (3px)</span></div>
+                    </div>
+                  </div>
+                </div>
+                <Separator />
+                <div className='space-y-4'>
+                  <div className='space-y-0.5'>
+                    <Label className='text-base flex items-center gap-2'><Square className='h-4 w-4' />Tamaño de Botones</Label>
+                    <p className='text-sm text-muted-foreground'>{(buttonSizeValue * 100).toFixed(0)}%</p>
+                  </div>
+                  <div className='space-y-4'>
+                    <div className='space-y-2'>
+                      <div className='flex items-center justify-between'>
+                        <Label htmlFor='button-size' className='text-sm'>Escala: {(buttonSizeValue * 100).toFixed(0)}%</Label>
+                      </div>
+                      <Slider 
+                        id='button-size' 
+                        min={0.85} 
+                        max={1.3} 
+                        step={0.05} 
+                        value={[buttonSizeValue]} 
+                        onValueChange={([value]) => setButtonSizeValue(value)} 
+                        className='w-full' 
+                        aria-label='Ajustar tamaño de botones' 
+                      />
+                      <div className='flex justify-between text-xs text-muted-foreground'><span>Pequeños (85%)</span><span>Grandes (130%)</span></div>
+                    </div>
+                  </div>
+                </div>
+                <Separator />
+                <div className='space-y-4'>
+                  <div className='flex items-center justify-between'>
+                    <div className='space-y-0.5'>
+                      <Label className='text-base flex items-center gap-2'>
+                        <Bell className='h-4 w-4' />
+                        Alertas Visuales
+                      </Label>
+                      <p className='text-sm text-muted-foreground'>Mostrar alertas visuales en lugar de sonidos</p>
+                    </div>
+                    <Switch checked={visualAlertsEnabled} onCheckedChange={setVisualAlertsEnabled} aria-label='Activar o desactivar alertas visuales' />
+                  </div>
+                  {visualAlertsEnabled && (
+                    <div className='bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 p-3 rounded-md space-y-2'>
+                      <div className='flex items-start gap-2'>
+                        <AlertCircle className='h-4 w-4 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0' />
+                        <p className='text-xs text-blue-900 dark:text-blue-100'>Las alertas visuales se mostrarán como notificaciones en la pantalla en lugar de reproducir sonidos de alerta.</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <Separator />
+                <div className='space-y-4'>
+                  <div className='flex items-center justify-between'>
+                    <div className='space-y-0.5'>
+                      <Label className='text-base flex items-center gap-2'>
+                        <CircleSlash className='h-4 w-4' />
+                        Bloquear Autoplay
+                      </Label>
+                      <p className='text-sm text-muted-foreground'>Prevenir reproducción automática de videos y audios</p>
+                    </div>
+                    <Switch checked={autoplayBlocked} onCheckedChange={setAutoplayBlocked} aria-label='Activar o desactivar bloqueo de autoplay' />
+                  </div>
+                  {autoplayBlocked && (
+                    <div className='bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 p-3 rounded-md space-y-2'>
+                      <div className='flex items-start gap-2'>
+                        <AlertCircle className='h-4 w-4 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0' />
+                        <p className='text-xs text-green-900 dark:text-green-100'>La reproducción automática de videos y audios está bloqueada. Tendrás que hacer clic para reproducir.</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </SheetContent>
