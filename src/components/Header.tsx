@@ -12,6 +12,7 @@ import { Label } from './ui/label';
 import { Switch } from './ui/switch';
 import { Separator } from './ui/separator';
 import LanguageToggle from './LanguageToggle';
+import AccessibilitySidebar from './AccessibilitySidebar';
 import { cn } from '@/lib/utils';
 import {
   Sheet,
@@ -48,7 +49,6 @@ const Header = () => {
   const { theme, setTheme, baseTheme } = useTheme();
   const { fontSize, setFontSize, increaseFontSize, decreaseFontSize } = useFontSize();
   const { isReading, isEnabled, speed, volume, toggleEnabled, setSpeed, setVolume, stop, readEntirePage, readSelectedText } = useSpeechReader();
-  const [isAccessibilityOpen, setIsAccessibilityOpen] = useState(false);
   
   const [isMenuVisible, setIsMenuVisible] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -215,113 +215,8 @@ const Header = () => {
           
           <LanguageToggle /> 
           
-          {/* BOTÓN 2: MENU DE ACCESIBILIDAD (SETTINGS / AJUSTES) */}
-          <Sheet open={isAccessibilityOpen} onOpenChange={setIsAccessibilityOpen}>
-            <SheetTrigger asChild>
-              <Button variant='ghost' size='sm' aria-label={`Abrir menú de ${header.accessibilityOptions}`} aria-haspopup='true' className='relative'>
-                <Settings className='h-5 w-5' aria-hidden='true' /> {/* ÍCONO DE AJUSTES/CONFIGURACIÓN */}
-                {isEnabled && <span className='absolute -top-1 -right-1 h-3 w-3 rounded-full bg-green-500 border-2 border-background' aria-label={header.activeReader} />}
-              </Button>
-            </SheetTrigger>
-            <SheetContent side='right' className='w-full sm:w-[400px] md:w-[480px] lg:w-[540px] overflow-y-auto'>
-              <SheetHeader>
-                <SheetTitle className='flex items-center gap-2'>
-                  <Settings className='h-5 w-5' />
-                  {header.accessibilityOptions}
-                </SheetTitle>
-                <SheetDescription>
-                  {header.customizeExperience}
-                </SheetDescription>
-              </SheetHeader>
-              <div className='space-y-6 py-6'>
-                {/* LECTOR DE VOZ */}
-                <div className='space-y-4'>
-                  {/* ... (Contenido de Lector de Voz) ... */}
-                  <div className='flex items-center justify-between'>
-                    <div className='space-y-0.5'>
-                      <Label className='text-base flex items-center gap-2'>
-                        {isEnabled ? <Volume2 className='h-4 w-4' /> : <VolumeX className='h-4 w-4' />}
-                        {header.voiceReader}
-                      </Label>
-                      <p className='text-sm text-muted-foreground'>{header.keyboardShortcuts}</p>
-                    </div>
-                    <Switch checked={isEnabled} onCheckedChange={toggleEnabled} aria-label={`Activar o desactivar ${header.voiceReader}`} />
-                  </div>
-                  {isEnabled && (
-                    <div className='space-y-3 pl-6 border-l-2 border-muted'>
-                      {/* ... (Botones y atajos) ... */}
-                      <div className='grid grid-cols-2 gap-2'>
-                        <Button variant='outline' size='sm' onClick={readEntirePage} className='text-xs h-auto py-2' aria-label={`${header.readPage} (Alt+R)`}>
-                          <BookOpen className='h-4 w-4 mr-1' />
-                          <span className='truncate'>{header.readPage}</span>
-                        </Button>
-                        <Button variant='outline' size='sm' onClick={readSelectedText} className='text-xs h-auto py-2' aria-label={`${header.readSelection} (Alt+S)`}>
-                          <FileText className='h-4 w-4 mr-1' />
-                          <span className='truncate'>{header.readSelection}</span>
-                        </Button>
-                      </div>
-                      <div className='bg-muted/50 p-3 rounded-md space-y-1 text-xs'>
-                        <p className='font-semibold mb-2'>Atajos de Teclado:</p>
-                        <p><kbd className='px-1.5 py-0.5 bg-background border rounded text-xs'>Alt + R</kbd> {header.readPage}</p>
-                        <p><kbd className='px-1.5 py-0.5 bg-background border rounded text-xs'>Alt + S</kbd> {header.readSelection}</p>
-                        <p><kbd className='px-1.5 py-0.5 bg-background border rounded text-xs'>Alt + X</kbd> {header.stopReading}</p>
-                        <p><kbd className='px-1.5 py-0.5 bg-background border rounded text-xs'>Alt + T</kbd> Activar/Desactivar</p>
-                      </div>
-                      {/* ... (Sliders y Botón Detener) ... */}
-                      <div className='space-y-2'>
-                        <div className='flex items-center justify-between'>
-                          <Label htmlFor='speech-speed' className='text-sm'>{header.speed}: {speed.toFixed(1)}x</Label>
-                          {isReading && <span className='flex items-center gap-1 text-xs text-green-600'><Play className='h-3 w-3' />Reproduciendo</span>}
-                        </div>
-                        <Slider id='speech-speed' min={0.5} max={2} step={0.1} value={[speed]} onValueChange={([value]) => setSpeed(value)} className='w-full' aria-label={`Ajustar ${header.speed} del lector de voz`} />
-                        <div className='flex justify-between text-xs text-muted-foreground'><span>{header.slow}</span><span>{header.fast}</span></div>
-                      </div>
-                      <div className='space-y-2'>
-                        <Label htmlFor='speech-volume' className='text-sm'>{header.volume}: {Math.round(volume * 100)}%</Label>
-                        <Slider id='speech-volume' min={0} max={1} step={0.1} value={[volume]} onValueChange={([value]) => setVolume(value)} className='w-full' aria-label={`Ajustar ${header.volume} del lector de voz`} />
-                        <div className='flex justify-between text-xs text-muted-foreground'><span>{header.silence}</span><span>{header.high}</span></div>
-                      </div>
-                      {isReading && <Button variant='outline' size='sm' onClick={stop} className='w-full' aria-label={header.stopReading}><StopCircle className='h-4 w-4 mr-2' />{header.stopReading}</Button>}
-                    </div>
-                  )}
-                </div>
-                <Separator />
-                
-                {/* TEMA VISUAL */}
-                <div className='space-y-4'>
-                  <div className='space-y-0.5'>
-                    <Label className='text-base flex items-center gap-2'><Sun className='h-4 w-4' />{header.visualTheme}</Label>
-                    <p className='text-sm text-muted-foreground'>{getThemeLabel()}</p>
-                  </div>
-                  <div className='grid grid-cols-2 gap-2 sm:gap-3'>
-                    <Button variant={theme === 'system' ? 'default' : 'outline'} className='justify-start text-xs sm:text-sm h-auto py-2 px-3' onClick={() => setTheme('system')}><Monitor className='h-4 w-4 mr-1 sm:mr-2 flex-shrink-0' /><span className='truncate'>{header.system}</span></Button>
-                    <Button variant={theme === 'light' ? 'default' : 'outline'} className='justify-start text-xs sm:text-sm h-auto py-2 px-3' onClick={() => setTheme('light')}><Sun className='h-4 w-4 mr-1 sm:mr-2 flex-shrink-0' /><span className='truncate'>{header.light}</span></Button>
-                    <Button variant={theme === 'dark' ? 'default' : 'outline'} className='justify-start text-xs sm:text-sm h-auto py-2 px-3' onClick={() => setTheme('dark')}><Moon className='h-4 w-4 mr-1 sm:mr-2 flex-shrink-0' /><span className='truncate'>{header.dark}</span></Button>
-                    <Button variant={theme === 'high-contrast' ? 'default' : 'outline'} className='justify-start text-xs sm:text-sm h-auto py-2 px-3' onClick={() => setTheme('high-contrast')}><Contrast className='h-4 w-4 mr-1 sm:mr-2 flex-shrink-0' /><span className='truncate'>{header.highContrast}</span></Button>
-                  </div>
-                </div>
-                <Separator />
-                
-                {/* TAMAÑO DE FUENTE */}
-                <div className='space-y-4'>
-                  <div className='space-y-0.5'>
-                    <Label className='text-base flex items-center gap-2'><Type className='h-4 w-4' />{header.fontSize}</Label>
-                    <p className='text-sm text-muted-foreground'>{getFontSizeLabel()}</p>
-                  </div>
-                  <div className='grid grid-cols-2 gap-2 sm:gap-3'>
-                    <Button variant={fontSize === 'small' ? 'default' : 'outline'} className='justify-start text-xs sm:text-sm h-auto py-2 px-3' onClick={() => setFontSize('small')}><Type className='h-3 w-3 mr-1 sm:mr-2 flex-shrink-0' /><span className='truncate'>{header.small}</span></Button>
-                    <Button variant={fontSize === 'normal' ? 'default' : 'outline'} className='justify-start text-xs sm:text-sm h-auto py-2 px-3' onClick={() => setFontSize('normal')}><Type className='h-4 w-4 mr-1 sm:mr-2 flex-shrink-0' /><span className='truncate'>{header.normal}</span></Button>
-                    <Button variant={fontSize === 'large' ? 'default' : 'outline'} className='justify-start text-xs sm:text-sm h-auto py-2 px-3' onClick={() => setFontSize('large')}><Type className='h-5 w-5 mr-1 sm:mr-2 flex-shrink-0' /><span className='truncate'>{header.large}</span></Button>
-                    <Button variant={fontSize === 'extra-large' ? 'default' : 'outline'} className='justify-start text-xs sm:text-sm h-auto py-2 px-3' onClick={() => setFontSize('extra-large')}><Type className='h-6 w-6 mr-1 sm:mr-2 flex-shrink-0' /><span className='truncate'>{header.extraLarge}</span></Button>
-                  </div>
-                  <div className='flex gap-2'>
-                    <Button variant='outline' onClick={decreaseFontSize} disabled={fontSize === 'small'} className='flex-1 text-xs sm:text-sm h-auto py-2 px-3' aria-label={`Disminuir ${header.fontSize}`}><ZoomOut className='h-4 w-4 mr-1 sm:mr-2 flex-shrink-0' /><span className='truncate'>{header.reduce}</span></Button>
-                    <Button variant='outline' onClick={increaseFontSize} disabled={fontSize === 'extra-large'} className='flex-1 text-xs sm:text-sm h-auto py-2 px-3' aria-label={`Aumentar ${header.fontSize}`}><ZoomIn className='h-4 w-4 mr-1 sm:mr-2 flex-shrink-0' /><span className='truncate'>{header.amplify}</span></Button>
-                  </div>
-                </div>
-              </div>
-            </SheetContent>
-          </Sheet>
+          {/* NUEVO MENU DE ACCESIBILIDAD CON ICONO UNIVERSAL */}
+          <AccessibilitySidebar />
           
           {/* BOTONES DE AUTENTICACIÓN */}
           <div className="flex items-center gap-3">

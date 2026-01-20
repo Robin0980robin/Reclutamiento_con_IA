@@ -164,6 +164,9 @@ export function SpeechReaderProvider({ children }: { children: ReactNode }) {
 
     if (selectedText && selectedText.length > 0) {
       speak(selectedText);
+    } else {
+      // Dar feedback si no hay texto seleccionado
+      speak("No hay texto seleccionado. Por favor, selecciona o subraya el texto que quieres que lea.");
     }
   };
 
@@ -174,7 +177,12 @@ export function SpeechReaderProvider({ children }: { children: ReactNode }) {
         switch (e.key.toLowerCase()) {
           case 'r':
             e.preventDefault();
-            readEntirePage();
+            // Toggle: si está leyendo, detener; si no, leer toda la página
+            if (isReading) {
+              stop();
+            } else {
+              readEntirePage();
+            }
             break;
           case 's':
             e.preventDefault();
@@ -197,7 +205,7 @@ export function SpeechReaderProvider({ children }: { children: ReactNode }) {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isEnabled, speed, volume, voice]);
+  }, [isEnabled, speed, volume, voice, isReading]);
 
   return (
     <SpeechReaderContext.Provider 

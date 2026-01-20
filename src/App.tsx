@@ -10,6 +10,7 @@ import { SpeechReaderProvider } from "@/contexts/SpeechReaderContext";
 import { AccessibilityProvider } from "@/contexts/AccessibilityContext"; 
 import { DataProvider } from "@/contexts/DataContext"; 
 import ProtectedRoute from "@/components/ProtectedRoute"; 
+import AccessibilityWidgets from "@/components/AccessibilityWidgets";
 
 // Importación de Páginas
 import Index from "./pages/Index";
@@ -36,6 +37,7 @@ const App = () => (
             <TooltipProvider>
               <Toaster />
               <Sonner />
+              <AccessibilityWidgets />
               <BrowserRouter>
                 <AuthProvider>
                   {/* DataProvider debe ir dentro de AuthProvider si usa useAuth() */}

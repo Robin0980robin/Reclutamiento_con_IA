@@ -21,6 +21,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     return stored || "light";
   });
 
+  // Track darkMode changes for high-contrast theme updates
+  const [darkModeHint, setDarkModeHint] = useState(false);
+
   useEffect(() => {
     const root = window.document.documentElement;
     
@@ -28,8 +31,21 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     root.classList.remove("light", "dark", "high-contrast", "high-contrast-light", "high-contrast-dark");
 
     if (theme === "high-contrast") {
-      // Apply high contrast based on the base theme
-      root.classList.add(baseTheme === "dark" ? "high-contrast-dark" : "high-contrast-light");
+      // Check accessibility settings for dark mode preference
+      const accessibilitySettings = localStorage.getItem('accessibility-settings');
+      const isDarkMode = accessibilitySettings ? JSON.parse(accessibilitySettings).darkMode : false;
+      
+      // Apply high contrast with appropriate base
+      if (isDarkMode) {
+        root.classList.add("high-contrast-dark");
+        root.classList.add("dark");
+        setBaseTheme("dark");
+      } else {
+        root.classList.add("high-contrast-light");
+        root.classList.add("light");
+        setBaseTheme("light");
+      }
+      root.classList.add("high-contrast");
     } else if (theme === "system") {
       const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
         ? "dark"
@@ -43,7 +59,24 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
     localStorage.setItem("theme", theme);
     localStorage.setItem("baseTheme", baseTheme);
-  }, [theme, baseTheme]);
+  }, [theme, baseTheme, darkModeHint]);
+
+  // Listen for darkMode changes when in high-contrast mode
+  useEffect(() => {
+    const handleDarkModeChange = () => {
+      if (theme === "high-contrast") {
+        // Force re-render by toggling darkModeHint
+        setDarkModeHint(prev => !prev);
+      }
+    };
+
+    // Custom event from AccessibilityContext
+    window.addEventListener('darkModeChanged', handleDarkModeChange);
+    
+    return () => {
+      window.removeEventListener('darkModeChanged', handleDarkModeChange);
+    };
+  }, [theme]);
 
   // Listen for system theme changes when in system mode
   useEffect(() => {

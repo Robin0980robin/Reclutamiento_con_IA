@@ -335,3 +335,170 @@ All colors MUST be HSL.
 .font-size-extra-large {
   --base-font-size: 20px;
 }
+
+/* Letter spacing levels */
+[data-letter-spacing="1"] * {
+  letter-spacing: -0.05em;
+}
+
+[data-letter-spacing="2"] * {
+  letter-spacing: -0.025em;
+}
+
+[data-letter-spacing="3"] * {
+  letter-spacing: normal;
+}
+
+[data-letter-spacing="4"] * {
+  letter-spacing: 0.05em;
+}
+
+[data-letter-spacing="5"] * {
+  letter-spacing: 0.1em;
+}
+
+/* ============================================ */
+/* ACCESSIBILITY FEATURES - Custom Styles */
+/* ============================================ */
+
+/* Link Highlighting for better visibility */
+.highlight-links a,
+.highlight-links button,
+.highlight-links [role="button"],
+.highlight-links [tabindex="0"]:not([tabindex="-1"]) {
+  outline: 3px solid hsl(var(--primary)) !important;
+  outline-offset: 2px !important;
+  border-radius: 4px;
+  background-color: hsl(var(--primary) / 0.05) !important;
+  transition: all 0.2s ease-in-out;
+}
+
+.highlight-links a:hover,
+.highlight-links button:hover {
+  background-color: hsl(var(--primary) / 0.15) !important;
+  outline-color: hsl(var(--accent)) !important;
+}
+
+.highlight-links a:focus,
+.highlight-links button:focus {
+  outline-width: 4px !important;
+  background-color: hsl(var(--accent) / 0.2) !important;
+}
+
+/* Enhanced Focus Indicators */
+.enhanced-focus *:focus-visible {
+  outline: 4px solid hsl(var(--ring)) !important;
+  outline-offset: 4px !important;
+  box-shadow: 0 0 0 4px hsl(var(--background)), 
+              0 0 0 8px hsl(var(--ring) / 0.3) !important;
+}
+
+/* Video Interpreter Container (placeholder for future implementation) */
+.video-interpreter #video-interpreter-widget {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 300px;
+  height: 200px;
+  background: hsl(var(--card));
+  border: 2px solid hsl(var(--border));
+  border-radius: 12px;
+  box-shadow: 0 4px 12px hsl(var(--foreground) / 0.1);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: hsl(var(--muted-foreground));
+}
+
+/* Voice Control Active Indicator */
+.voice-control #voice-control-indicator {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: hsl(var(--destructive));
+  color: hsl(var(--destructive-foreground));
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 9999;
+  box-shadow: 0 4px 12px hsl(var(--foreground) / 0.2);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Screen Reader Only (sr-only) utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Skip to main content link */
+.skip-to-main {
+  position: absolute;
+  left: -9999px;
+  z-index: 999;
+  padding: 1em;
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  text-decoration: none;
+  border-radius: 4px;
+}
+
+.skip-to-main:focus {
+  left: 50%;
+  transform: translateX(-50%);
+  top: 10px;
+}
+
+/* Keyboard Navigation Enhancement */
+.keyboard-navigation *:focus {
+  outline: 3px solid hsl(var(--primary)) !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 6px hsl(var(--primary) / 0.2) !important;
+  transition: all 0.2s ease-in-out;
+}
+
+.keyboard-navigation *:focus-visible {
+  outline: 4px solid hsl(var(--accent)) !important;
+  outline-offset: 4px !important;
+  box-shadow: 0 0 0 8px hsl(var(--accent) / 0.3),
+              0 0 20px hsl(var(--accent) / 0.4) !important;
+}
+
+/* Smooth scroll behavior for keyboard navigation */
+.keyboard-navigation {
+  scroll-behavior: smooth;
+}
+
+/* Keyboard Navigation Indicator */
+#keyboard-navigation-indicator {
+  animation: slideInLeft 0.3s ease-out;
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

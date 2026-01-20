@@ -25,6 +25,12 @@ interface AccessibilitySettings {
   
   // Language
   language: Language;
+  
+  // New features
+  videoInterpreterEnabled: boolean; // Video-intérprete de lengua de señas
+  linkHighlightEnabled: boolean; // Resaltado de enlaces
+  voiceControlEnabled: boolean; // Control por voz
+  keyboardNavigationEnabled: boolean; // Navegación con flechas del teclado
 }
 
 interface AccessibilityContextType {
@@ -50,6 +56,10 @@ const defaultSettings: AccessibilitySettings = {
   animationsEnabled: true,
   focusIndicatorEnhanced: false,
   language: 'es',
+  videoInterpreterEnabled: false,
+  linkHighlightEnabled: false,
+  voiceControlEnabled: false,
+  keyboardNavigationEnabled: false,
 };
 
 const AccessibilityContext = createContext<AccessibilityContextType | undefined>(undefined);
@@ -69,9 +79,15 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const root = document.documentElement;
     
-    // Contrast and theme
+    // IMPORTANT: Don't override theme classes - those are managed by ThemeContext
+    // We only add high-contrast as a class for CSS targeting, but actual theme
+    // (high-contrast-light/dark) is managed by ThemeContext
+    
+    // Add high-contrast class for CSS hooks (in addition to ThemeContext management)
     root.classList.toggle('high-contrast', settings.highContrast);
-    root.classList.toggle('dark', settings.darkMode);
+    
+    // Dark mode is managed by ThemeContext via setTheme()
+    // We just keep the setting in sync for reference
     
     // Text size (1-6 levels)
     root.setAttribute('data-text-size', String(settings.textSizeLevel));
@@ -97,6 +113,18 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
     
     // Focus indicators
     root.classList.toggle('enhanced-focus', settings.focusIndicatorEnhanced);
+    
+    // Link highlight
+    root.classList.toggle('highlight-links', settings.linkHighlightEnabled);
+    
+    // Video interpreter
+    root.classList.toggle('video-interpreter', settings.videoInterpreterEnabled);
+    
+    // Voice control
+    root.classList.toggle('voice-control', settings.voiceControlEnabled);
+    
+    // Keyboard navigation
+    root.classList.toggle('keyboard-navigation', settings.keyboardNavigationEnabled);
     
     // Language
     root.setAttribute('lang', settings.language);
