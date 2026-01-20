@@ -10,7 +10,6 @@ import { ButtonSizeProvider } from "@/contexts/ButtonSizeContext";
 import { LetterSpacingProvider } from "@/contexts/LetterSpacingContext";
 import { AutoplayBlockProvider } from "@/contexts/AutoplayBlockContext";
 import { SpeechReaderProvider } from "@/contexts/SpeechReaderContext";
-import { useKeyboardNavigation } from "@/hooks/useKeyboardNavigation";
 import Index from "./pages/Index";
 import Caracteristicas from "./pages/Caracteristicas";
 import ParaQuien from "./pages/ParaQuien";
@@ -21,50 +20,38 @@ import Profile from "./pages/Profile";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
+import Dashboard from "./pages/Dashboard"; 
+import CandidateDashboard from "./pages/CandidateDashboard"; // <-- Importación del Dashboard del Candidato
 
 const queryClient = new QueryClient();
-
-const AppContent = () => {
-  useKeyboardNavigation();
-
-  return (
-    <AuthProvider>
-      <Routes>
-        <Route path="/" element={<Index />} />
-        <Route path="/caracteristicas" element={<Caracteristicas />} />
-        <Route path="/para-quien" element={<ParaQuien />} />
-        <Route path="/contacto" element={<Contacto />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
-        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </AuthProvider>
-  );
-};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider>
       <FontSizeProvider>
-        <ButtonSizeProvider>
-          <LetterSpacingProvider>
-            <AutoplayBlockProvider>
-              <SpeechReaderProvider>
-                <TooltipProvider>
-                  <Toaster />
-                  <Sonner />
-                  <BrowserRouter>
-                    <AppContent />
-                  </BrowserRouter>
-                </TooltipProvider>
-              </SpeechReaderProvider>
-            </AutoplayBlockProvider>
-          </LetterSpacingProvider>
-        </ButtonSizeProvider>
+        <SpeechReaderProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <AuthProvider>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/caracteristicas" element={<Caracteristicas />} />
+                  <Route path="/para-quien" element={<ParaQuien />} />
+                  <Route path="/contacto" element={<Contacto />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/forgot-password" element={<ForgotPassword />} />
+                  <Route path="/reset-password" element={<ResetPassword />} />
+                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </AuthProvider>
+            </BrowserRouter>
+          </TooltipProvider>
+        </SpeechReaderProvider>
       </FontSizeProvider>
     </ThemeProvider>
   </QueryClientProvider>
