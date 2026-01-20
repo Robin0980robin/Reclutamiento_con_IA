@@ -1,4 +1,5 @@
-import { Brain, LogOut, User, Menu, Sun, Moon, Monitor, Contrast, Type, Volume2, VolumeX, ZoomIn, ZoomOut, Play, StopCircle, BookOpen, FileText } from 'lucide-react';
+import { Brain, LogOut, User, Menu, Sun, Moon, Monitor, Contrast, Type, Volume2, VolumeX, ZoomIn, ZoomOut, Play, StopCircle, BookOpen, FileText, Target, Users, Mail, Bell, AlertCircle, CircleSlash } from 'lucide-react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
 import { useAuth } from '@/contexts/AuthContext';
@@ -53,7 +54,14 @@ const Header = () => {
   const { letterSpacing, setLetterSpacing } = useLetterSpacing();
   const { autoplayBlocked, setAutoplayBlocked } = useAutoplayBlock();
   const { isReading, isEnabled, isPaused, speed, volume, toggleEnabled, setSpeed, setVolume, stop, pause, resume, readEntirePage, readSelectedText } = useSpeechReader();
+  const { header, common } = useI18n();
   const [isAccessibilityOpen, setIsAccessibilityOpen] = useState(false);
+  const [isMenuVisible, setIsMenuVisible] = useState(true);
+  const [visualAlertsEnabled, setVisualAlertsEnabled] = useState(false);
+
+  const toggleMenuVisibility = () => {
+    setIsMenuVisible(!isMenuVisible);
+  };
 
   const getThemeLabel = () => {
     switch (theme) {

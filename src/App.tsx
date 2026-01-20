@@ -10,6 +10,7 @@ import { ButtonSizeProvider } from "@/contexts/ButtonSizeContext";
 import { LetterSpacingProvider } from "@/contexts/LetterSpacingContext";
 import { AutoplayBlockProvider } from "@/contexts/AutoplayBlockContext";
 import { SpeechReaderProvider } from "@/contexts/SpeechReaderContext";
+import { AccessibilityProvider } from "@/contexts/AccessibilityContext";
 import Index from "./pages/Index";
 import Caracteristicas from "./pages/Caracteristicas";
 import ParaQuien from "./pages/ParaQuien";
@@ -27,33 +28,41 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <ThemeProvider>
-      <FontSizeProvider>
-        <SpeechReaderProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <AuthProvider>
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/caracteristicas" element={<Caracteristicas />} />
-                  <Route path="/para-quien" element={<ParaQuien />} />
-                  <Route path="/contacto" element={<Contacto />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/register" element={<Register />} />
-                  <Route path="/profile" element={<Profile />} />
-                  <Route path="/forgot-password" element={<ForgotPassword />} />
-                  <Route path="/reset-password" element={<ResetPassword />} />
-                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </AuthProvider>
-            </BrowserRouter>
-          </TooltipProvider>
-        </SpeechReaderProvider>
-      </FontSizeProvider>
-    </ThemeProvider>
+    <AccessibilityProvider>
+      <ThemeProvider>
+        <FontSizeProvider>
+          <ButtonSizeProvider>
+            <LetterSpacingProvider>
+              <AutoplayBlockProvider>
+                <SpeechReaderProvider>
+                  <TooltipProvider>
+                    <Toaster />
+                    <Sonner />
+                    <BrowserRouter>
+                      <AuthProvider>
+                        <Routes>
+                          <Route path="/" element={<Index />} />
+                          <Route path="/caracteristicas" element={<Caracteristicas />} />
+                          <Route path="/para-quien" element={<ParaQuien />} />
+                          <Route path="/contacto" element={<Contacto />} />
+                          <Route path="/login" element={<Login />} />
+                          <Route path="/register" element={<Register />} />
+                          <Route path="/profile" element={<Profile />} />
+                          <Route path="/forgot-password" element={<ForgotPassword />} />
+                          <Route path="/reset-password" element={<ResetPassword />} />
+                          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                          <Route path="*" element={<NotFound />} />
+                        </Routes>
+                      </AuthProvider>
+                    </BrowserRouter>
+                  </TooltipProvider>
+                </SpeechReaderProvider>
+              </AutoplayBlockProvider>
+            </LetterSpacingProvider>
+          </ButtonSizeProvider>
+        </FontSizeProvider>
+      </ThemeProvider>
+    </AccessibilityProvider>
   </QueryClientProvider>
 );
 
