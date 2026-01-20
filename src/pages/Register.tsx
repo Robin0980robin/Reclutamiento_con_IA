@@ -362,6 +362,10 @@ export default function Register() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Diálogos de Términos y Privacidad - Se renderizan solo cuando están abiertos */}
+      {showTerms && <TermsOfService open={showTerms} onOpenChange={setShowTerms} />}
+      {showPrivacy && <PrivacyPolicy open={showPrivacy} onOpenChange={setShowPrivacy} />}
     </div>
   );
 }

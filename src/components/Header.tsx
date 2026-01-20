@@ -1,27 +1,12 @@
-﻿import React, { useState, useEffect } from 'react'; 
-import { Brain, LogOut, User, Menu, Settings, Type, Volume2, VolumeX, ZoomIn, ZoomOut, Play, StopCircle, BookOpen, FileText, Target, Users, Mail, Eye, EyeOff, Sun, Moon, Monitor, Contrast } from 'lucide-react';
+import { Brain, LogOut, User, Menu } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
 import { useAuth } from '@/contexts/AuthContext';
-import { useTheme } from '@/contexts/ThemeContext';
-import { useFontSize } from '@/contexts/FontSizeContext';
-import { useSpeechReader } from '@/contexts/SpeechReaderContext';
 import { useI18n } from '@/hooks/use-i18n';
-import { Slider } from './ui/slider';
-import { Label } from './ui/label';
-import { Switch } from './ui/switch';
-import { Separator } from './ui/separator';
 import LanguageToggle from './LanguageToggle';
 import AccessibilitySidebar from './AccessibilitySidebar';
 import { cn } from '@/lib/utils';
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -40,15 +25,11 @@ import {
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
 
-// Clave para guardar la preferencia de visibilidad en localStorage
 const NAVIGATION_VISIBILITY_KEY = 'navigation-visible';
 
 const Header = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
-  const { theme, setTheme, baseTheme } = useTheme();
-  const { fontSize, setFontSize, increaseFontSize, decreaseFontSize } = useFontSize();
-  const { isReading, isEnabled, speed, volume, toggleEnabled, setSpeed, setVolume, stop, readEntirePage, readSelectedText } = useSpeechReader();
   
   const [isMenuVisible, setIsMenuVisible] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -65,57 +46,7 @@ const Header = () => {
   }, [isMenuVisible]);
 
   const toggleMenuVisibility = () => {
-    setIsMenuVisible(prev => !prev);
-  };
-  
-  // Lógica para Atajos de Teclado (Alt + C, Alt + P, Alt + O)
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.altKey) {
-        let destination = null;
-        switch (e.key.toLowerCase()) {
-          case 'c':
-            destination = '/caracteristicas';
-            break;
-          case 'p':
-            destination = '/para-quien';
-            break;
-          case 'o':
-            destination = '/contacto';
-            break;
-        }
-        
-        if (destination) {
-          e.preventDefault();
-          navigate(destination);
-        }
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [navigate]);
-
-  const getThemeLabel = () => {
-    switch (theme) {
-      case 'light': return header.lightMode;
-      case 'dark': return header.darkMode;
-      case 'high-contrast': return `${header.highContrast} (${baseTheme === 'dark' ? header.altDark : header.altLight})`;
-      default: return header.defaultMode;
-    }
-  };
-
-  const getFontSizeLabel = () => {
-    switch (fontSize) {
-      case 'small': return `${header.small} (14px)`;
-      case 'normal': return `${header.normal} (16px)`;
-      case 'large': return `${header.large} (18px)`;
-      case 'extra-large': return `${header.extraLarge} (20px)`;
-      default: return `${header.normal} (16px)`;
-    }
+    setIsMenuVisible(!isMenuVisible);
   };
 
   return (
@@ -135,7 +66,7 @@ const Header = () => {
             <span className='text-xl font-bold'>{common.appName}</span>
           </Link>
 
-          {/* BOTÓN 1: MENU DE NAVEGACIÓN (TRES RAYITAS) - POSICIÓN CORREGIDA */}
+          {/* Botón de navegación */}
           <Button 
             variant='ghost' 
             size='sm' 
@@ -147,26 +78,21 @@ const Header = () => {
           </Button>
         </div>
 
-        {/* NAVEGACIÓN PRINCIPAL: MENÚ EXPANDIBLE (Ajustado el layout) */}
-        {/* Se usa flex-shrink-0 y mx-4 para limitar el ancho y evitar solapamiento, y justify-start para pegarlo al botón */}
+        {/* Navegación principal */}
         {isMenuVisible && (
           <NavigationMenu className='hidden md:flex flex-shrink-0 justify-start mx-4'> 
             <NavigationMenuList>
               
-              {/* ITEM 1: CARACTERÍSTICAS (Alt + C) */}
               <NavigationMenuItem>
                 <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-                  <Link to='/caracteristicas' className='flex items-center gap-1.5' title={`Atajo: Alt + C`}>
-                    <Target className='h-4 w-4 text-primary/70' />
+                  <Link to='/caracteristicas' className='flex items-center gap-1.5'>
                     {header.features}
                   </Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
               
-              {/* ITEM 2: DESPLEGABLE DE INFORMACIÓN (Alt + P) */}
               <NavigationMenuItem>
-                <NavigationMenuTrigger className='flex items-center gap-1.5' title={`Atajo: Alt + P`}>
-                  <Users className='h-4 w-4 text-primary/70' />
+                <NavigationMenuTrigger>
                   {header.forWho}
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
@@ -197,11 +123,9 @@ const Header = () => {
                 </NavigationMenuContent>
               </NavigationMenuItem>
 
-              {/* ITEM 3: CONTACTO (Alt + O) */}
               <NavigationMenuItem>
                 <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-                  <Link to='/contacto' className='flex items-center gap-1.5' title={`Atajo: Alt + O`}>
-                    <Mail className='h-4 w-4 text-primary/70' />
+                  <Link to='/contacto'>
                     {header.contact}
                   </Link>
                 </NavigationMenuLink>
@@ -210,15 +134,15 @@ const Header = () => {
           </NavigationMenu>
         )}
         
-        {/* Lado Derecho (Language, Accessibility, Auth) - Mantenido a la derecha con ml-auto */}
+        {/* Lado derecho */}
         <div className='flex items-center gap-3 ml-auto'>
           
           <LanguageToggle /> 
           
-          {/* NUEVO MENU DE ACCESIBILIDAD CON ICONO UNIVERSAL */}
+          {/* Menú de accesibilidad */}
           <AccessibilitySidebar />
           
-          {/* BOTONES DE AUTENTICACIÓN */}
+          {/* Autenticación */}
           <div className="flex items-center gap-3">
             
           {user ? (
@@ -273,7 +197,6 @@ const Header = () => {
 
 export default Header;
 
-// --- UTILITY COMPONENT (Para NavigationMenu) ---
 const ListItem = React.forwardRef<
   React.ElementRef<"a">,
   React.ComponentPropsWithoutRef<"a">
