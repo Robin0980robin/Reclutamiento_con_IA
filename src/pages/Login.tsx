@@ -7,10 +7,11 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
-import { Brain, Mail, Lock, Eye, EyeOff, Home, AlertTriangle } from "lucide-react";
+import { Brain, Mail, Lock, Eye, EyeOff, Home, AlertTriangle, User, Loader2 } from "lucide-react";
 import FieldHelper from "@/components/FieldHelper";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useI18n } from "@/hooks/use-i18n"; // Importar useI18n
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Correo electrónico inválido" }),
@@ -21,6 +22,10 @@ export default function Login() {
   const { signIn, user, isLocked, lockUntil, loginAttempts } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  
+  // CORRECCIÓN: Desestructurar 'common' y 'login' directamente del hook
+  // El error de la imagen parece venir de un conflicto de tipado interno. 
+  const { common, login } = useI18n(); 
   
   const [loginData, setLoginData] = useState({ email: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
@@ -38,7 +43,7 @@ export default function Login() {
   useEffect(() => {
     if (isLocked && lockUntil) {
       const interval = setInterval(() => {
-        const remaining = Math.ceil((lockUntil - Date.now()) / 1000 / 60);
+        const remaining = Math.ceil((lockUntil! - Date.now()) / 1000 / 60); // Usar ! para asegurar lockUntil
         setRemainingTime(remaining);
         if (remaining <= 0) {
           clearInterval(interval);
@@ -52,10 +57,12 @@ export default function Login() {
     e.preventDefault();
     
     if (isLocked) {
+      // Usar la traducción con el placeholder
+      const lockedMessage = login.lockedAccount.replace('{time}', remainingTime.toString());
       toast({
         variant: "destructive",
         title: "Cuenta bloqueada",
-        description: `Tu cuenta está bloqueada por ${remainingTime} minuto(s) para protegerte.`
+        description: lockedMessage
       });
       return;
     }
@@ -70,12 +77,15 @@ export default function Login() {
       if (error) {
         if (error.message.includes("Invalid login credentials")) {
           const attemptsLeft = 5 - loginAttempts - 1;
+          
+          let description = (attemptsLeft > 0 && login.attemptsLeft) 
+            ? login.attemptsLeft.replace('{attemptsLeft}', attemptsLeft.toString())
+            : "Correo o contraseña incorrectos";
+
           toast({
             variant: "destructive",
             title: "Error de inicio de sesión",
-            description: attemptsLeft > 0 
-              ? `Correo o contraseña incorrectos. Te quedan ${attemptsLeft} intentos.`
-              : "Correo o contraseña incorrectos"
+            description: description
           });
         } else {
           toast({
@@ -98,6 +108,14 @@ export default function Login() {
     }
   };
 
+  const attemptsDisplay = loginAttempts > 0 && !isLocked && (
+    <p className="text-sm text-muted-foreground text-center">
+      {login.attempts.replace('{attempts}', loginAttempts.toString())}
+    </p>
+  );
+  
+  const lockedMessage = login.lockedAccount.replace('{time}', remainingTime.toString());
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-accent/5 to-primary/5 p-4">
       <div className="w-full max-w-md">
@@ -107,27 +125,27 @@ export default function Login() {
           size="sm"
           className="mb-4"
           onClick={() => navigate('/')}
-          aria-label="Volver al inicio"
+          aria-label={common.backToHome}
         >
           <Home className="h-4 w-4 mr-2" />
-          Volver al inicio
+          {common.backToHome}
         </Button>
 
         {/* Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 mb-4">
             <Brain className="h-10 w-10 text-primary" />
-            <span className="text-2xl font-bold">TalentMatch</span>
+            <span className="text-2xl font-bold">{common.appName}</span>
           </div>
-          <h1 className="text-3xl font-bold mb-2">Bienvenido de nuevo</h1>
-          <p className="text-muted-foreground">Ingresa a tu cuenta para continuar</p>
+          <h1 className="text-3xl font-bold mb-2">{login.welcome}</h1>
+          <p className="text-muted-foreground">{login.continue}</p>
         </div>
 
         <Card>
           <CardHeader>
-            <CardTitle>Iniciar Sesión</CardTitle>
+            <CardTitle>{login.cardTitle}</CardTitle>
             <CardDescription>
-              ¿No tienes cuenta? <Link to="/register" className="text-primary hover:underline">Regístrate aquí</Link>
+              {login.noAccount} <Link to="/register" className="text-primary hover:underline">{common.register}</Link>
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -135,8 +153,8 @@ export default function Login() {
               <Alert variant="destructive" className="mb-4">
                 <AlertTriangle className="h-4 w-4" />
                 <AlertDescription>
-                  Tu cuenta se ha bloqueado por {remainingTime} minuto(s) para protegerte después de varios intentos fallidos.
-                  {" "}<Link to="/forgot-password" className="underline font-medium">¿Olvidaste tu contraseña?</Link>
+                  {lockedMessage}
+                  {" "}<Link to="/forgot-password" className="underline font-medium">{login.forgotPassword}</Link>
                 </AlertDescription>
               </Alert>
             )}
@@ -144,8 +162,8 @@ export default function Login() {
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <Label htmlFor="email">Correo electrónico</Label>
-                  <FieldHelper content="Ingresa el correo que usaste al registrarte" />
+                  <Label htmlFor="email">{login.email} <Mail className="h-4 w-4 text-muted-foreground inline ml-1" /></Label>
+                  <FieldHelper content={login.emailHelper} />
                 </div>
                 <div className="relative">
                   <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -166,14 +184,14 @@ export default function Login() {
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Label htmlFor="password">Contraseña</Label>
-                    <FieldHelper content="Mínimo 6 caracteres. Nunca compartas tu contraseña." />
+                    <Label htmlFor="password">{login.password} <Lock className="h-4 w-4 text-muted-foreground inline ml-1" /></Label>
+                    <FieldHelper content={login.passwordHelper} />
                   </div>
                   <Link 
                     to="/forgot-password" 
                     className="text-sm text-primary hover:underline"
                   >
-                    ¿Olvidaste tu contraseña?
+                    {login.forgotPassword}
                   </Link>
                 </div>
                 <div className="relative">
@@ -204,26 +222,32 @@ export default function Login() {
                   id="remember" 
                   checked={rememberMe}
                   onCheckedChange={(checked) => setRememberMe(checked as boolean)}
-                  aria-label="Recordar mi sesión"
+                  aria-label={login.rememberMe}
                 />
                 <label
                   htmlFor="remember"
                   className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
                 >
-                  Recordar mi sesión
+                  {login.rememberMe}
                 </label>
-                <FieldHelper content="No activar en equipos públicos. Tu sesión permanecerá activa." />
+                <FieldHelper content={login.rememberMeHelper} />
               </div>
 
               <Button type="submit" className="w-full" disabled={isLoading || isLocked}>
-                {isLoading ? "Iniciando sesión..." : "Iniciar Sesión"}
+                {isLoading ? (
+                   <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    {login.loggingIn}
+                  </>
+                ) : (
+                  <>
+                    <User className="h-4 w-4 mr-2" />
+                    {login.loginButton}
+                  </>
+                )}
               </Button>
 
-              {loginAttempts > 0 && !isLocked && (
-                <p className="text-sm text-muted-foreground text-center">
-                  Intentos fallidos: {loginAttempts}/5
-                </p>
-              )}
+              {attemptsDisplay}
             </form>
           </CardContent>
         </Card>
